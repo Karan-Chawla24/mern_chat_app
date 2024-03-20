@@ -49,7 +49,6 @@ const Signup = () => {
         .then((res) => res.json())
         .then((data) => {
           setPic(data.url.toString());
-          console.log(data.url.toString());
           setLoading(false);
         })
         .catch((err) => {
@@ -125,12 +124,6 @@ const Signup = () => {
       });
       setLoading(false);
     }
-  };
-
-  const handleUploadSuccess = (response) => {
-    const result = response.result;
-    console.log(result.url);
-    setPic(result.url);
   };
 
   return (

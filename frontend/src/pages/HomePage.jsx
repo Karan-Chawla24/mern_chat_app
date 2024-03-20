@@ -24,7 +24,7 @@ const HomePage = () => {
   }, [hisory]);
 
   return (
-    <Container maxW="xl" centerContent>
+    <Container maxW="xl" centerContent mt={20}>
       <Box
         d="flex"
         justifyContent={"center"}
@@ -41,7 +41,7 @@ const HomePage = () => {
           color={"black"}
           textAlign={"center"}
         >
-          Talk-A-Tive
+          वार्तालाप (Vartalap)
         </Text>
       </Box>
       <Box

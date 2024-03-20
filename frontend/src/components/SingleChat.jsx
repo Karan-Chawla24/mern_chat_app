@@ -200,11 +200,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             flexDir="column"
             justifyContent="flex-end"
             p={3}
-            bg="#E8E8E8"
+            bg={'url("https://wallpapers.com/images/high/whatsapp-chat-warm-gray-n0gvicfob8j7k3ud.webp")'}
+            backgroundSize="cover"
+            backgroundPosition="center"
             w="100%"
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
+            
           >
             {loading ? (
               <Spinner

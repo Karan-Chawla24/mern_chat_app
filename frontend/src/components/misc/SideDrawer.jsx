@@ -134,7 +134,7 @@ const SideDrawer = () => {
           </Button>
         </Tooltip>
         <Text fontFamily={"work Sans"} fontSize={"2xl"}>
-          Talk-A-Tive
+        वार्तालाप (Vartalap)
         </Text>
         <div>
           <Menu>

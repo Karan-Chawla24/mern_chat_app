@@ -3,7 +3,7 @@
 .App {
   min-height: 100vh;
   display: flex;
-  background-image: url("./images/background1.jpg");
+  background-image: url("./images/login3.jpg");
   background-size: cover;
   background-position: center;
 }

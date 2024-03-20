@@ -11,15 +11,16 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { ChatState } from "../../context/ChatProvider";
 
 const Login = () => {
   const [show, setShow] = useState(false);
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const history = useHistory();
+  const { setUser } = ChatState();
 
   const submitHandler = async () => {
     setLoading(true);
@@ -52,7 +53,7 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-
+      setUser(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       history.push("/chats");
@@ -101,20 +102,9 @@ const Login = () => {
         width={"100%"}
         style={{ marginTop: 15 }}
         onClick={submitHandler}
+        isLoading={loading}
       >
         Login
-      </Button>
-
-      <Button
-        variant={"solid"}
-        colorScheme="red"
-        width={"100%"}
-        onClick={() => {
-          setEmail("guest@gmail.com");
-          setPassword("guest123");
-        }}
-      >
-        Get Guest User Credentials
       </Button>
     </VStack>
   );
