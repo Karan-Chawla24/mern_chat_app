@@ -10,7 +10,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { getSender, userDetails } from "../config/chatLogics";
+import {
+  extractEmojiCharacter,
+  getSender,
+  userDetails,
+} from "../config/chatLogics";
 import ProfileModal from "./misc/ProfileModal";
 import UpdateGroupChatModal from "./misc/UpdateGroupChatModal";
 import axios from "axios";
@@ -18,6 +22,8 @@ import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
+import EmojiPicker from "emoji-picker-react";
+import Happy from "../images/happy.png";
 
 // const ENDPOINT = "http://localhost:5000";
 const ENDPOINT = "https://mern-chat-app-amfj.onrender.com";
@@ -32,6 +38,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
   const toast = useToast();
 
   const defaultOptions = {
@@ -158,6 +165,51 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     });
   });
 
+  const onEmojiClick = async (event, emojiObject) => {
+    console.log("object", emojiObject.target.src);
+    const emojiCharacter = extractEmojiCharacter(emojiObject.target.src);
+
+    const actualEmoji = String.fromCodePoint(parseInt(emojiCharacter, 16));
+
+    setNewMessage((prevMessage) =>
+      prevMessage ? prevMessage + actualEmoji : actualEmoji
+    );
+
+    if (event.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedChat._id);
+      try {
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage("");
+        const { data } = await axios.post(
+          "/api/message",
+          {
+            content: newMessage + actualEmoji,
+            chatId: selectedChat._id,
+          },
+          config
+        );
+        socket.emit("new message", data);
+        setMessages([...messages, data]);
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to send the message",
+          status: "error",
+          duration: "5000",
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+    }
+
+    setShowPicker(false);
+  };
+
   return (
     <>
       {selectedChat ? (
@@ -200,14 +252,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             flexDir="column"
             justifyContent="flex-end"
             p={3}
-            bg={'url("https://wallpapers.com/images/high/whatsapp-chat-warm-gray-n0gvicfob8j7k3ud.webp")'}
+            bg={
+              'url("https://wallpapers.com/images/high/whatsapp-chat-warm-gray-n0gvicfob8j7k3ud.webp")'
+            }
             backgroundSize="cover"
             backgroundPosition="center"
             w="100%"
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
-            
           >
             {loading ? (
               <Spinner
@@ -234,13 +287,41 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <></>
               )}
-              <Input
-                variant="filled"
-                bg="#E0E0E0"
-                placeholder="Enter a message"
-                onChange={typingHandler}
-                value={newMessage}
-              />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <img
+                  src={Happy}
+                  alt="emoji"
+                  onClick={() => setShowPicker((val) => !val)}
+                  width={"20px"}
+                  height={"20px"}
+                  className="emoji-icon"
+                  style={{
+                    marginLeft: "10px",
+                    cursor: "pointer",
+                  }}
+                />
+                <Input
+                  variant="filled"
+                  bg="#E0E0E0"
+                  placeholder="Enter a message"
+                  onChange={typingHandler}
+                  w={"90%"}
+                  value={newMessage}
+                  ml={"10px"}
+                />
+              </div>
+              {showPicker && (
+                <EmojiPicker
+                  onEmojiClick={onEmojiClick}
+                  disableAutoFocus={true}
+                  pickerStyle={{
+                    position: "absolute",
+                    left: "10px",
+                    top: "-300px",
+                    zIndex: 2,
+                  }}
+                />
+              )}
             </FormControl>
           </Box>
         </>

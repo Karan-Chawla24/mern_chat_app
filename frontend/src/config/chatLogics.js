@@ -43,3 +43,9 @@ export const isSameSenderMargin = (messages, m, i, userId) => {
 export const isSameUser = (messages, m, i) => {
   return i > 0 && messages[i - 1].sender.id === m.sender._id;
 };
+
+export const extractEmojiCharacter = (emojiSrc) => {
+  const filename = emojiSrc.split("/").pop(); // Get the last part of the URL (filename)
+  const emojiCharacter = filename.split(".")[0]; // Extract the emoji character from the filename
+  return emojiCharacter;
+};
