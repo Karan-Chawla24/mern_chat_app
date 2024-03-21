@@ -8,12 +8,12 @@
   background-position: center;
 }
 
-.chat-page {
+/* .chat-page {
   min-height: 100vh;
   background-image: url("./images/chat-back.avif");
   background-size: cover;
   background-position: center;
-}
+} */
 
 ::-webkit-scrollbar {
   width: 0px;
